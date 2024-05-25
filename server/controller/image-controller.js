@@ -6,9 +6,12 @@ const url = 'http://localhost:8000';
 
 let gfs, gridfsBucket;
 const conn = mongoose.connection;
+
 conn.once('open', () => {
+    console.log("Connectedgrid",conn.db);
     gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
         bucketName: 'fs'
+        
     });
     gfs = grid(conn.db, mongoose.mongo);
     gfs.collection('fs');
