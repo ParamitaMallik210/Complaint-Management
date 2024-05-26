@@ -4,6 +4,7 @@ import Post from '../model/post.js';
 
 export const createPost = async (request, response) => {
     try {
+        console.log(request.body);
         const post = await new Post(request.body);
         post.save();
 
