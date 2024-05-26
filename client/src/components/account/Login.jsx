@@ -129,7 +129,9 @@ const Login = ({ isUserAuthenticated }) => {
     return (
         <Component>
             <Box>
-                <Image src={imageURL} alt="blog" />
+                <Image src="https://cdn-icons-png.flaticon.com/512/9746/9746847.png" height="80" width="30" alt="Electricity Management" />
+                <div class="parent-container"><h5>Electricty Management System</h5></div>
+
                 {
                     account === 'login' ?
                         <Wrapper>
