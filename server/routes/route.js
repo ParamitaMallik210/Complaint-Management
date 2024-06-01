@@ -1,11 +1,11 @@
 import express from 'express';
 
-import { createPost, updatePost, deletePost, getPost, getAllPosts } from '../controller/post-controller.js';
+import { createPost, updatePost, deletePost, getPost, getAllPosts, adminDeletePost,adminGetAllPosts,adminUpdatePost,adminGetPost } from '../controller/post-controller.js';
 import { uploadImage, getImage } from '../controller/image-controller.js';
 import { newComment, getComments, deleteComment } from '../controller/comment-controller.js';
 import { loginUser, singupUser, logoutUser } from '../controller/user-controller.js';
 import { authenticateToken, createNewToken } from '../controller/jwt-controller.js';
-
+import { loginAdmin } from '../controller/admin-controller.js';
 import upload from '../utils/upload.js';
 
 const router = express.Router();
@@ -29,5 +29,15 @@ router.get('/file/:filename', getImage);
 router.post('/comment/new', authenticateToken, newComment);
 router.get('/comments/:id', authenticateToken, getComments);
 router.delete('/comment/delete/:id', authenticateToken, deleteComment);
+
+// Admin login route
+// router.post('/admin/login', loginAdmin);
+// router.put('/admin/update/:id', adminUpdatePost);
+// router.delete('/admin/delete/:id', adminDeletePost);
+// router.get('/admin/post/:id', adminGetPost);
+// router.get('/admin/posts', adminGetAllPosts);
+
+
+              
 
 export default router;

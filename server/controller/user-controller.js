@@ -26,6 +26,40 @@ export const singupUser = async (request, response) => {
 
 
 export const loginUser = async (request, response) => {
+    console.log(request.body);
+    if(request.body.role === 'admin') {
+        let user = {
+            username: process.env.ADMIN_USERNAME,
+           password: process.env.ADMIN_PASSWORD,
+            role: "admin"
+        }
+        if (user.username!==request.body.username)  {
+            console.log("no");
+            return response.status(400).json({ msg: 'Username does not match' });
+            
+        }
+            console.log("done");
+        try {
+            let match = user.password===request.body.password;
+            console.log(match);
+            if (match) {
+                const accessToken = jwt.sign(user, process.env.ACCESS_SECRET_KEY, { expiresIn: '15m'});
+                console.log(accessToken);
+                const refreshToken = jwt.sign(user, process.env.REFRESH_SECRET_KEY);
+                console.log(refreshToken);
+                const newToken = new Token({ token: refreshToken });
+                await newToken.save();
+               
+                response.status(200).json({ accessToken: accessToken, refreshToken: refreshToken,name: user.username, password: user.password,role: user.role,username: user.username});
+            
+            } else {
+                response.status(400).json({ msg: 'Password does not match' })
+            }
+        } catch (error) {
+            response.status(500).json({ msg: 'error while login the user' })
+        }
+    }
+    else{
     let user = await User.findOne({ username: request.body.username });
     if (!user) {
         return response.status(400).json({ msg: 'Username does not match' });
@@ -48,6 +82,7 @@ export const loginUser = async (request, response) => {
     } catch (error) {
         response.status(500).json({ msg: 'error while login the user' })
     }
+}
 }
 
 export const logoutUser = async (request, response) => {
