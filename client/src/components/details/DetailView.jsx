@@ -67,6 +67,7 @@ const DetailView = () => {
         const fetchData = async () => {
             let response = await API.getPostById(id);
             if (response.isSuccess) {
+                console.log(account,"detailviewacount")
                 setPost(response.data);
             }
         }
@@ -83,7 +84,7 @@ const DetailView = () => {
             <Image src={post.picture || url} alt="post" />
             <Box style={{ float: 'right' }}>
                 {   
-                    account.username === post.username && 
+                   (account.username === post.username || account.name === 'admin') && 
                     <>  
                         <Link to={`/update/${post._id}`}><EditIcon color="primary" /></Link>
                         <DeleteIcon onClick={() => deleteBlog()} color="error" />

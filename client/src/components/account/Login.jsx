@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-
-import { TextField, Box, Button, Typography, styled } from '@mui/material';
+import { TextField, Box, Button, Typography, styled, Select, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
 import { API } from '../../service/api';
 import { DataContext } from '../../context/DataProvider';
 
@@ -58,17 +56,19 @@ const Error = styled(Typography)`
     line-height: 0;
     margin-top: 10px;
     font-weight: 600;
-`
+`;
 
 const loginInitialValues = {
     username: '',
-    password: ''
+    password: '',
+    role: 'user'
 };
 
 const signupInitialValues = {
     name: '',
     username: '',
     password: '',
+    role: 'user'
 };
 
 const Login = ({ isUserAuthenticated }) => {
@@ -76,26 +76,43 @@ const Login = ({ isUserAuthenticated }) => {
     const [signup, setSignup] = useState(signupInitialValues);
     const [error, showError] = useState('');
     const [account, toggleAccount] = useState('login');
+    const [role, setRole] = useState('user');
 
     const navigate = useNavigate();
     const { setAccount } = useContext(DataContext);
 
-    const imageURL = 'https://www.sesta.it/wp-content/uploads/2021/03/logo-blog-sesta-trasparente.png';
-
     useEffect(() => {
         showError(false);
-    }, [login])
+    }, [login]);
 
     const onValueChange = (e) => {
-        setLogin({ ...login, [e.target.name]: e.target.value });
-    }
+        setLogin({ ...login, [e.target.name]: e.target.value, role });
+    };
 
     const onInputChange = (e) => {
-        setSignup({ ...signup, [e.target.name]: e.target.value });
-    }
+        setSignup({ ...signup, [e.target.name]: e.target.value, role });
+    };
 
     const loginUser = async () => {
         let response = await API.userLogin(login);
+        if(role === 'admin') {
+           
+            if (response.isSuccess) {
+                showError('');
+    
+                sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
+                sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
+                setAccount({ name: response.data.name, username: response.data.username });
+                
+                isUserAuthenticated(true);
+                setLogin(loginInitialValues);
+                navigate('/');
+            } else {
+                showError('Something went wrong! Please try again later.');
+            }
+           
+        }
+        else{
         if (response.isSuccess) {
             showError('');
 
@@ -103,13 +120,14 @@ const Login = ({ isUserAuthenticated }) => {
             sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
             setAccount({ name: response.data.name, username: response.data.username });
             
-            isUserAuthenticated(true)
+            isUserAuthenticated(true);
             setLogin(loginInitialValues);
             navigate('/');
         } else {
-            showError('Something went wrong! please try again later');
+            showError('Something went wrong! Please try again later.');
         }
     }
+    };
 
     const signupUser = async () => {
         let response = await API.userSignup(signup);
@@ -118,45 +136,48 @@ const Login = ({ isUserAuthenticated }) => {
             setSignup(signupInitialValues);
             toggleAccount('login');
         } else {
-            showError('Something went wrong! please try again later');
+            showError('Something went wrong! Please try again later.');
         }
-    }
+    };
 
     const toggleSignup = () => {
         account === 'signup' ? toggleAccount('login') : toggleAccount('signup');
-    }
+    };
 
     return (
         <Component>
             <Box>
                 <Image src="https://cdn-icons-png.flaticon.com/512/9746/9746847.png" height="80" width="30" alt="Electricity Management" />
-                <div class="parent-container"><h5>Electricty Management System</h5></div>
+                <div className="parent-container"><h5>Electricity Management System</h5></div>
+                <Select value={role} onChange={(e) => setRole(e.target.value)} displayEmpty>
+                    <MenuItem value="user">User</MenuItem>
+                    <MenuItem value="admin">Admin</MenuItem>
+                </Select>
+                {account === 'login' ? (
+                    <Wrapper>
+                        <TextField variant="standard" value={login.username} onChange={(e) => onValueChange(e)} name='username' label='Enter Username' />
+                        <TextField variant="standard" value={login.password} onChange={(e) => onValueChange(e)} name='password' label='Enter Password' />
 
-                {
-                    account === 'login' ?
-                        <Wrapper>
-                            <TextField variant="standard" value={login.username} onChange={(e) => onValueChange(e)} name='username' label='Enter Username' />
-                            <TextField variant="standard" value={login.password} onChange={(e) => onValueChange(e)} name='password' label='Enter Password' />
+                        {error && <Error>{error}</Error>}
 
-                            {error && <Error>{error}</Error>}
+                        <LoginButton variant="contained" onClick={loginUser}>Login</LoginButton>
+                        <Text style={{ textAlign: 'center' }}>OR</Text>
+                        <SignupButton onClick={toggleSignup} style={{ marginBottom: 50 }}>Create an account</SignupButton>
+                    </Wrapper>
+                ) : (
+                    <Wrapper>
+                        <TextField variant="standard" onChange={(e) => onInputChange(e)} name='name' label='Enter Name' />
+                        <TextField variant="standard" onChange={(e) => onInputChange(e)} name='username' label='Enter Username' />
+                        <TextField variant="standard" onChange={(e) => onInputChange(e)} name='password' label='Enter Password' />
 
-                            <LoginButton variant="contained" onClick={() => loginUser()} >Login</LoginButton>
-                            <Text style={{ textAlign: 'center' }}>OR</Text>
-                            <SignupButton onClick={() => toggleSignup()} style={{ marginBottom: 50 }}>Create an account</SignupButton>
-                        </Wrapper> :
-                        <Wrapper>
-                            <TextField variant="standard" onChange={(e) => onInputChange(e)} name='name' label='Enter Name' />
-                            <TextField variant="standard" onChange={(e) => onInputChange(e)} name='username' label='Enter Username' />
-                            <TextField variant="standard" onChange={(e) => onInputChange(e)} name='password' label='Enter Password' />
-
-                            <SignupButton onClick={() => signupUser()} >Signup</SignupButton>
-                            <Text style={{ textAlign: 'center' }}>OR</Text>
-                            <LoginButton variant="contained" onClick={() => toggleSignup()}>Already have an account</LoginButton>
-                        </Wrapper>
-                }
+                        <SignupButton onClick={signupUser}>Signup</SignupButton>
+                        <Text style={{ textAlign: 'center' }}>OR</Text>
+                        <LoginButton variant="contained" onClick={toggleSignup}>Already have an account</LoginButton>
+                    </Wrapper>
+                )}
             </Box>
         </Component>
-    )
-}
+    );
+};
 
 export default Login;

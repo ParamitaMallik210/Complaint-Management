@@ -53,11 +53,11 @@ function App() {
             {/* <Route path='/about' element={<PrivateRoute isAuthenticated={isAuthenticated} />} >
               <Route path='/about' element={<About />} />
             </Route> */}
-
+               
             <Route path='/contact' element={<PrivateRoute isAuthenticated={isAuthenticated} />} >
               <Route path='/contact' element={<Contact />} />
             </Route>
-          </Routes>
+               </Routes>
         </Box>
       </BrowserRouter>
     </DataProvider>
