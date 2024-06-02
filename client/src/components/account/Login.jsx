@@ -7,47 +7,58 @@ import { DataContext } from '../../context/DataProvider';
 const Component = styled(Box)`
     width: 400px;
     margin: auto;
-    box-shadow: 5px 2px 5px 2px rgb(0 0 0/ 0.6);
+    box-shadow: 5px 2px 5px 2px rgb(0 0 0 / 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px;
+    box-sizing: border-box;
 `;
 
 const Image = styled('img')({
     width: 100,
-    display: 'flex',
-    margin: 'auto',
-    padding: '50px 0 0'
+    margin: '20px 0',
 });
 
 const Wrapper = styled(Box)`
-    padding: 25px 35px;
     display: flex;
-    flex: 1;
-    overflow: auto;
     flex-direction: column;
+    width: 100%;
     & > div, & > button, & > p {
         margin-top: 20px;
     }
+`;
+
+const CenteredBox = styled(Box)`
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    width: 100%;
 `;
 
 const LoginButton = styled(Button)`
     text-transform: none;
     background: #FB641B;
     color: #fff;
-    height: 48px;
+    height: 40px;
     border-radius: 2px;
+    width: 100%;
 `;
 
 const SignupButton = styled(Button)`
     text-transform: none;
     background: #fff;
     color: #2874f0;
-    height: 48px;
+    height: 40px;
     border-radius: 2px;
     box-shadow: 0 2px 4px 0 rgb(0 0 0 / 20%);
+    width: 100%;
 `;
 
 const Text = styled(Typography)`
     color: #878787;
     font-size: 12px;
+    text-align: center;
 `;
 
 const Error = styled(Typography)`
@@ -95,38 +106,31 @@ const Login = ({ isUserAuthenticated }) => {
 
     const loginUser = async () => {
         let response = await API.userLogin(login);
-        if(role === 'admin') {
-           
+        if (role === 'admin') {
             if (response.isSuccess) {
                 showError('');
-    
                 sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
                 sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
                 setAccount({ name: response.data.name, username: response.data.username });
-                
                 isUserAuthenticated(true);
                 setLogin(loginInitialValues);
                 navigate('/');
             } else {
                 showError('Something went wrong! Please try again later.');
             }
-           
-        }
-        else{
-        if (response.isSuccess) {
-            showError('');
-
-            sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
-            sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
-            setAccount({ name: response.data.name, username: response.data.username });
-            
-            isUserAuthenticated(true);
-            setLogin(loginInitialValues);
-            navigate('/');
         } else {
-            showError('Something went wrong! Please try again later.');
+            if (response.isSuccess) {
+                showError('');
+                sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
+                sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
+                setAccount({ name: response.data.name, username: response.data.username });
+                isUserAuthenticated(true);
+                setLogin(loginInitialValues);
+                navigate('/');
+            } else {
+                showError('Something went wrong! Please try again later.');
+            }
         }
-    }
     };
 
     const signupUser = async () => {
@@ -146,36 +150,35 @@ const Login = ({ isUserAuthenticated }) => {
 
     return (
         <Component>
-            <Box>
-                <Image src="https://cdn-icons-png.flaticon.com/512/9746/9746847.png" height="80" width="30" alt="Electricity Management" />
-                <div className="parent-container"><h5>Electricity Management System</h5></div>
-                <Select value={role} onChange={(e) => setRole(e.target.value)} displayEmpty>
-                    <MenuItem value="user">User</MenuItem>
-                    <MenuItem value="admin">Admin</MenuItem>
-                </Select>
-                {account === 'login' ? (
-                    <Wrapper>
-                        <TextField variant="standard" value={login.username} onChange={(e) => onValueChange(e)} name='username' label='Enter Username' />
-                        <TextField variant="standard" value={login.password} onChange={(e) => onValueChange(e)} name='password' label='Enter Password' />
-
-                        {error && <Error>{error}</Error>}
-
-                        <LoginButton variant="contained" onClick={loginUser}>Login</LoginButton>
-                        <Text style={{ textAlign: 'center' }}>OR</Text>
-                        <SignupButton onClick={toggleSignup} style={{ marginBottom: 50 }}>Create an account</SignupButton>
-                    </Wrapper>
-                ) : (
-                    <Wrapper>
-                        <TextField variant="standard" onChange={(e) => onInputChange(e)} name='name' label='Enter Name' />
-                        <TextField variant="standard" onChange={(e) => onInputChange(e)} name='username' label='Enter Username' />
-                        <TextField variant="standard" onChange={(e) => onInputChange(e)} name='password' label='Enter Password' />
-
-                        <SignupButton onClick={signupUser}>Signup</SignupButton>
-                        <Text style={{ textAlign: 'center' }}>OR</Text>
-                        <LoginButton variant="contained" onClick={toggleSignup}>Already have an account</LoginButton>
-                    </Wrapper>
-                )}
-            </Box>
+            <Image src="https://cdn-icons-png.flaticon.com/512/9746/9746847.png" alt="Electricity Management" />
+            <Typography variant="h5" align="center">Electricity Management System</Typography>
+            {account === 'login' && (
+                <CenteredBox>
+                    <Select value={role} onChange={(e) => setRole(e.target.value)} displayEmpty>
+                        <MenuItem value="user">User</MenuItem>
+                        <MenuItem value="admin">Admin</MenuItem>
+                    </Select>
+                </CenteredBox>
+            )}
+            {account === 'login' ? (
+                <Wrapper>
+                    <TextField variant="standard" value={login.username} onChange={(e) => onValueChange(e)} name='username' label='Enter Username' fullWidth />
+                    <TextField variant="standard" value={login.password} onChange={(e) => onValueChange(e)} name='password' label='Enter Password' fullWidth />
+                    {error && <Error>{error}</Error>}
+                    <LoginButton variant="contained" onClick={loginUser}>Login</LoginButton>
+                    <Text>OR</Text>
+                    <SignupButton onClick={toggleSignup}>Create an account</SignupButton>
+                </Wrapper>
+            ) : (
+                <Wrapper>
+                    <TextField variant="standard" onChange={(e) => onInputChange(e)} name='name' label='Enter Name' fullWidth />
+                    <TextField variant="standard" onChange={(e) => onInputChange(e)} name='username' label='Enter Username' fullWidth />
+                    <TextField variant="standard" onChange={(e) => onInputChange(e)} name='password' label='Enter Password' fullWidth />
+                    <SignupButton onClick={signupUser}>Signup</SignupButton>
+                    <Text>OR</Text>
+                    <LoginButton variant="contained" onClick={toggleSignup}>Already have an account</LoginButton>
+                </Wrapper>
+            )}
         </Component>
     );
 };
