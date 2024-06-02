@@ -47,9 +47,13 @@ export const deletePost = async (request, response) => {
         if (!post) {
             return response.status(404).json({ msg: 'Post not found' });
         }
-        
 
-        await post.delete();
+        if(request.body.username === "admin"){
+            await post.delete();
+
+        response.status(200).json('Post deleted successfully');
+        }
+         await post.delete();
 
         response.status(200).json('Post deleted successfully');
     } catch (error) {
