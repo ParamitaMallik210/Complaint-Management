@@ -48,6 +48,8 @@ const initialPost = {
     picture: '',
     username: '',
     categories: '',
+    contactNumber: '',
+    emailAddress: '',
     createdDate: new Date()
 }
 
@@ -100,15 +102,18 @@ const CreatePost = () => {
                     style={{ display: "none" }}
                     onChange={(e) => setFile(e.target.files[0])}
                 />
-                <InputTextField onChange={(e) => handleChange(e)} name='title' placeholder="Title" />
-                <Button onClick={() => savePost()} variant="contained" color="primary">Publish</Button>
+                <InputTextField onChange={handleChange} name='title' placeholder="Title" />
+                <Button onClick={savePost} variant="contained" color="primary">Publish</Button>
             </StyledFormControl>
 
+            <InputTextField onChange={handleChange} name='contactNumber' placeholder="Contact Number" style={{ marginTop: '20px' }} />
+            <InputTextField onChange={handleChange} name='emailAddress' placeholder="Email Address" style={{ marginTop: '20px' }} />
+            
             <Textarea
                 rowsMin={5}
                 placeholder="Tell your story..."
                 name='description'
-                onChange={(e) => handleChange(e)} 
+                onChange={handleChange}
             />
         </Container>
     )

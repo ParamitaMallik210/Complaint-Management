@@ -48,6 +48,7 @@ const Heading = styled(Typography)`
 const Author = styled(Box)(({ theme }) => ({
     color: '#878787',
     display: 'flex',
+    flexDirection: 'column',
     margin: '20px 0',
     [theme.breakpoints.down('sm')]: {
         display: 'block'
@@ -67,12 +68,11 @@ const DetailView = () => {
         const fetchData = async () => {
             let response = await API.getPostById(id);
             if (response.isSuccess) {
-                console.log(account,"detailviewacount")
                 setPost(response.data);
             }
         }
         fetchData();
-    }, []);
+    }, [id]);
 
     const deleteBlog = async () => {  
         await API.deletePost(post._id);
@@ -87,7 +87,7 @@ const DetailView = () => {
                    (account.username === post.username || account.name === 'admin') && 
                     <>  
                         <Link to={`/update/${post._id}`}><EditIcon color="primary" /></Link>
-                        <DeleteIcon onClick={() => deleteBlog()} color="error" />
+                        <DeleteIcon onClick={deleteBlog} color="error" />
                     </>
                 }
             </Box>
@@ -97,6 +97,8 @@ const DetailView = () => {
                 <Link to={`/?username=${post.username}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                     <Typography>Author: <span style={{fontWeight: 600}}>{post.username}</span></Typography>
                 </Link>
+                <Typography>Contact: {post.contactNumber}</Typography>
+                <Typography>Email: {post.emailAddress}</Typography>
                 <Typography style={{marginLeft: 'auto'}}>{new Date(post.createdDate).toDateString()}</Typography>
             </Author>
 
