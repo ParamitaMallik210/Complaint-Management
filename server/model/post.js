@@ -24,6 +24,13 @@ const PostSchema = mongoose.Schema({
     },
     createdDate: {
         type: Date
+    },
+    contactNumber: {
+        type: String,
+        required: true
+    },
+    emailAddress: {
+        type: String,
     }
 });
 
