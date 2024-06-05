@@ -95,11 +95,13 @@ const DetailView = () => {
 
             <Author>
                 <Link to={`/?username=${post.username}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <Typography>Author: <span style={{fontWeight: 600}}>{post.username}</span></Typography>
+                    <Typography>Complaint Raised By: <span style={{fontWeight: 600}}>{post.username}</span></Typography>
                 </Link>
                 <Typography>Contact: {post.contactNumber}</Typography>
                 <Typography>Email: {post.emailAddress}</Typography>
                 <Typography style={{marginLeft: 'auto'}}>{new Date(post.createdDate).toDateString()}</Typography>
+                <Typography>Hostel Number: {post.hostelnumber}</Typography>
+                <Typography>Room Number: {post.roomnumber}</Typography>
             </Author>
 
             <Typography>{post.description}</Typography>

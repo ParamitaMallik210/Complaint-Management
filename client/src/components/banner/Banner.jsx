@@ -26,7 +26,7 @@ const Banner = () => {
     
     return (
         <Image>
-            <Heading>ELECTRICTY MANAGEMENT SYSTEM</Heading>
+            <Heading>COMPLAINT MANAGEMENT SYSTEM</Heading>
             <SubHeading>Write your complaints</SubHeading>
         </Image>
     )
