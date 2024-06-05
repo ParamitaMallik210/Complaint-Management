@@ -31,6 +31,12 @@ const PostSchema = mongoose.Schema({
     },
     emailAddress: {
         type: String,
+    },
+    hostelnumber: {
+        type : String,
+    },
+    roomnumber:{
+        type : String,
     }
 });
 

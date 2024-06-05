@@ -9,6 +9,7 @@ const isAdmin = (username, password) => {
 
 export const createPost = async (request, response) => {
     try {
+        console.log(request.body);
         const post = new Post(request.body);
         await post.save();
 
